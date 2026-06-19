@@ -107,11 +107,11 @@ JFA CUDA:
 
 ### Example Input
 
-![Input Image](<img width="372" height="326" alt="zebra" src="https://github.com/user-attachments/assets/b370f0b6-591e-4be5-97e9-3f13e2526618" />)
+![Input Image](images/input.jpg)
 
 ### Example Output
 
-![Stippled Output](<img width="372" height="326" alt="outputshared" src="https://github.com/user-attachments/assets/d34e7035-4f55-4b5d-b336-00cc2172b268" />)
+![Stippled Output](images/output.jpg)
 
 ---
 
