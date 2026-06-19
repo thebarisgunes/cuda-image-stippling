@@ -1,41 +1,123 @@
-# cuda-image-stippling
-CUDA-accelerated weighted Voronoi image stippling with CPU, naive GPU, tiled GPU, and Jump Flooding Algorithm (JFA) implementations.
+# CUDA Image Stippling
 
-## Build
+Image stippling using weighted Lloyd relaxation with multiple implementations for performance comparison.
 
-Compile the CPU baseline with:
+Implemented versions:
 
-g++ -O2 cpu_baseline.cpp -o stippling_cpu
+* CPU Baseline
+* Naive CUDA
+* Shared Memory Tiled CUDA
+* Jump Flooding Algorithm (JFA) CUDA
 
-## Run
+The project generates stippled representations of images by distributing points according to image density and iteratively refining their positions using weighted Voronoi centroids.
 
-Basic usage:
+---
 
-./stippling_cpu input.png output.png 5000 25
-
-Usage with optional parameters:
-
-./stippling_cpu input.png output.png 5000 25 1.0 1
-
-Arguments
-argv[1] = input image path
-argv[2] = output image path
-argv[3] = number of stipple points
-argv[4] = number of Lloyd iterations
-argv[5] = optional gamma value, default = 1.0
-argv[6] = optional dot radius, default = 1
-
-Example:
-
-./stippling_cpu input.png output.png 5000 25 1.0 1
-
-This command generates a stippled version of input.png using 5000 points and 25 Lloyd iterations.
-
-Dependencies
+## Dependencies
 
 This project uses the single-header stb image libraries:
 
+```text
 stb_image.h
 stb_image_write.h
+```
 
-Download them from the official stb repository and place both files in the same folder as cpu_baseline.cpp.
+Download both files from the stb repository and place them in the same directory as the source files.
+
+---
+
+## Building
+
+### CPU Baseline
+
+```bash
+g++ -O2 cpu_baseline.cpp -o stippling_cpu
+```
+
+### Naive CUDA
+
+```bash
+nvcc -O2 cuda_naive.cu -o stippling_cuda_naive
+```
+
+### Shared Memory Tiled CUDA
+
+```bash
+nvcc -O2 cuda_tiled.cu -o stippling_cuda_tiled
+```
+
+### JFA CUDA
+
+```bash
+nvcc -O2 cuda_jfa.cu -o stippling_cuda_jfa
+```
+
+---
+
+## Usage
+
+CPU:
+
+```bash
+./stippling_cpu input.png output.png 5000 25 1.0 1
+```
+
+Naive CUDA:
+
+```bash
+./stippling_cuda_naive input.png output.png 5000 25 1.0 1 256
+```
+
+Shared Memory Tiled CUDA:
+
+```bash
+./stippling_cuda_tiled input.png output.png 5000 25 1.0 1 256
+```
+
+JFA CUDA:
+
+```bash
+./stippling_cuda_jfa input.png output.png 5000 25 1.0 1 256
+```
+
+---
+
+## Parameters
+
+### Required Parameters
+
+| Parameter      | Description                |
+| -------------- | -------------------------- |
+| `input_image`  | Input image path           |
+| `output_image` | Output image path          |
+| `num_points`   | Number of stipple points   |
+| `iterations`   | Number of Lloyd iterations |
+
+### Optional Parameters
+
+| Parameter    | Default | Description                     |
+| ------------ | ------- | ------------------------------- |
+| `gamma`      | `1.0`   | Density mapping exponent        |
+| `dot_radius` | `1`     | Radius of rendered stipple dots |
+| `block_size` | `256`   | CUDA thread block size          |
+
+---
+
+## Results
+
+### Example Input
+
+![Input Image](<img width="372" height="326" alt="zebra" src="https://github.com/user-attachments/assets/b370f0b6-591e-4be5-97e9-3f13e2526618" />)
+
+### Example Output
+
+![Stippled Output](<img width="372" height="326" alt="outputshared" src="https://github.com/user-attachments/assets/d34e7035-4f55-4b5d-b336-00cc2172b268" />)
+
+---
+
+## Notes
+
+* Darker image regions receive higher point density.
+* Point positions are refined using weighted Lloyd relaxation.
+* Timing information is reported for the major stages of each implementation.
+* The project is intended for comparing different approaches to the assignment stage of weighted Voronoi stippling.
